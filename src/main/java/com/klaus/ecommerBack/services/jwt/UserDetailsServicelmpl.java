@@ -1,4 +1,4 @@
-package com.klaus.ecommerBack.serviceJwt;
+package com.klaus.ecommerBack.services.jwt;
 
 import com.klaus.ecommerBack.entity.User;
 import com.klaus.ecommerBack.repository.UserRepository;

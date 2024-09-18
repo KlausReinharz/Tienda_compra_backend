@@ -1,13 +1,19 @@
 package com.klaus.ecommerBack.controller;
 
 import com.klaus.ecommerBack.dto.AuthenticationRequest;
+import com.klaus.ecommerBack.dto.SignupRequest;
+import com.klaus.ecommerBack.dto.UserDto;
 import com.klaus.ecommerBack.entity.User;
 import com.klaus.ecommerBack.repository.UserRepository;
+import com.klaus.ecommerBack.services.auth.AuthService;
 import com.klaus.ecommerBack.utils.JwtUtil;
+import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -30,6 +36,8 @@ public class AuthController {
     private final UserDetailsService userDetailsService;
     private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
+
+    private final AuthService authService;
 
     @PostMapping("/authenticate")
     public void createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest,
@@ -55,5 +63,14 @@ public class AuthController {
             );
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
         }
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<?> signupUser(@RequestBody SignupRequest signupRequest){
+        if(authService.hasUserWithEmail(signupRequest.getEmail())){
+            return new ResponseEntity<>("User already exists", HttpStatus.NOT_ACCEPTABLE);
+        }
+        UserDto userDto =  authService.createUser(signupRequest);
+        return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 }

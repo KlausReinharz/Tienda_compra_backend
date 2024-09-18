@@ -1,5 +1,6 @@
 package com.klaus.ecommerBack.filters;
 
+import com.klaus.ecommerBack.services.jwt.UserDetailsServicelmpl;
 import com.klaus.ecommerBack.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private  final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServicelmpl userDetailsService;
     private final JwtUtil jwtUtil;
 
     @Override
