@@ -16,8 +16,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtUtil {
-
-    public static final String SECRET ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        //"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    public static final String SECRET ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9EeyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQESflKxwRJSMeKKF2QT4fwpMeJf36POk6yJVEadQssw5c";
 
     public String generateToken(String userName){
         Map<String, Object> claims = new HashMap<>();

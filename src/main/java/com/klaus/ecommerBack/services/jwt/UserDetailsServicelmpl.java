@@ -19,8 +19,8 @@ public class UserDetailsServicelmpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findFirstByEmail(username);
         if(optionalUser.isEmpty()) throw new UsernameNotFoundException("Username not found",null);
-        return new org.springframework.security.core.userdetails.User(optionalUser.get().getName()
-        ,optionalUser.get().getPassword(),new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(optionalUser.get().getEmail(),
+                optionalUser.get().getPassword(),new ArrayList<>());
 
     }
 }

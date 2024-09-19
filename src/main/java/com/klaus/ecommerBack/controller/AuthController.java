@@ -7,7 +7,6 @@ import com.klaus.ecommerBack.entity.User;
 import com.klaus.ecommerBack.repository.UserRepository;
 import com.klaus.ecommerBack.services.auth.AuthService;
 import com.klaus.ecommerBack.utils.JwtUtil;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONException;
@@ -55,12 +54,15 @@ public class AuthController {
 
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        if(optionalUser.isEmpty()){
+        if(optionalUser.isPresent()){
             response.getWriter().write(new JSONObject()
                     .put("userId",optionalUser.get().getId())
                     .put("role",optionalUser.get().getRole())
                     .toString()
             );
+            response.addHeader("Access-Control-Expose-Headers","Authorization");
+            response.addHeader("Access-Control-Allow-Headers","Authorization, X-PINGOTHER, Origin, "+
+                    "X-Requested-With, Content-Type, Accept, X-Custom-header");
             response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
         }
     }
