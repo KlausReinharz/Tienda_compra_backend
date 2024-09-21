@@ -8,3 +8,9 @@ public class AuthenticationRequest {
     private String password;
 
 }
+
+/*
+* LAS CLASESE DTO (DATA TRANSFER OBJECT) SIRVE PARA
+* LA TRANSFERENCIA DE DATOS ENTRE LA DIFERENTES CAPAS
+* COMO CONTROLADOR Y SERVICIOS
+* */
