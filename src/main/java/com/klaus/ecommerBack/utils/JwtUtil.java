@@ -14,13 +14,23 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Component
 public class JwtUtil {
-        //"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-    public static final String SECRET ="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9EeyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQESflKxwRJSMeKKF2QT4fwpMeJf36POk6yJVEadQssw5c";
+    private static final Logger logger = LoggerFactory.getLogger(JwtUtil.class);
+
+    public static final String SECRET ="Jd8vUnJtQm5vTkdWWlJ4eHdXcG9xbm5LRElXUlZCQVZpSU1DaHV4V3RhZ0tsdkxQQ2FscG1ad3JrYnc=";
+
+
 
     public String generateToken(String userName){
         Map<String, Object> claims = new HashMap<>();
+        String token = createToken(claims, userName);
+
+        // Log del token generado
+        logger.info("Generated Token: " + token);
         return createToken(claims, userName);
     }
 
@@ -31,6 +41,8 @@ public class JwtUtil {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*30))
                 .signWith(getSignkey(), SignatureAlgorithm.HS256).compact();
+
+
     }
 
     private Key getSignkey(){
@@ -63,6 +75,7 @@ public class JwtUtil {
         final String username= extractUsername(token);
         return (username.equals(userDetails.getUsername())&& !isTokenExpired(token));
     }
+
 
 
 

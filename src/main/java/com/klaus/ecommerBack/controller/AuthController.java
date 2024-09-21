@@ -25,10 +25,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.io.IOException;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+
 @Controller
 @RequiredArgsConstructor
 public class AuthController {
-    public static final String TOKEN_PREFIX="Bearer";
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+    public static final String TOKEN_PREFIX="Bearer ";
     public static final String HEADER_STRING="Authorization";
 
     private final AuthenticationManager authenticationManager;
@@ -53,6 +58,7 @@ public class AuthController {
         Optional<User> optionalUser =userRepository.findFirstByEmail(userDetails.getUsername());
 
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
+        logger.info("Generated Token in Controller: {}", jwt);
 
         if(optionalUser.isPresent()){
             response.getWriter().write(new JSONObject()
@@ -63,7 +69,7 @@ public class AuthController {
             response.addHeader("Access-Control-Expose-Headers","Authorization");
             response.addHeader("Access-Control-Allow-Headers","Authorization, X-PINGOTHER, Origin, "+
                     "X-Requested-With, Content-Type, Accept, X-Custom-header");
-            response.addHeader(HEADER_STRING, TOKEN_PREFIX + jwt);
+            response.addHeader(HEADER_STRING,TOKEN_PREFIX + jwt);
         }
     }
 
