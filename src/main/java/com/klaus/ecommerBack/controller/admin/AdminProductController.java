@@ -25,9 +25,17 @@ public class AdminProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productDto1);
 
     }
+    //este va estar relacionado con el front
+    //con el servicio getAllProducto con el componete dashboard admin
     @GetMapping("/products")
     public ResponseEntity<List<ProductDto>>getAllProducts(){
         List<ProductDto> productDtos=adminProductService.getAllProducts();
+        return ResponseEntity.ok(productDtos);
+    }
+
+    @GetMapping("/search/{name}")
+    public ResponseEntity<List<ProductDto>>getAllProductByName(@PathVariable String name){
+        List<ProductDto> productDtos=adminProductService.getAllProductByName(name);
         return ResponseEntity.ok(productDtos);
     }
 
