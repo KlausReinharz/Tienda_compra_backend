@@ -39,7 +39,7 @@ public class AdminProductController {
         return ResponseEntity.ok(productDtos);
     }
 
-
+//Eliminar producto
     @DeleteMapping("/product/{productId}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long productId){
         boolean deleted = adminProductService.deleteProduct(productId);
