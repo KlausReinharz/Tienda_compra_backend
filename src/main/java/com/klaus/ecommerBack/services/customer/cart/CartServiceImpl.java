@@ -1,6 +1,8 @@
 package com.klaus.ecommerBack.services.customer.cart;
 
 import com.klaus.ecommerBack.dto.AddProductInCartDto;
+import com.klaus.ecommerBack.dto.CartItemsDto;
+import com.klaus.ecommerBack.dto.OrderDto;
 import com.klaus.ecommerBack.entity.CartItems;
 import com.klaus.ecommerBack.entity.Order;
 import com.klaus.ecommerBack.entity.Product;
@@ -15,7 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CartServiceImpl implements CartService{
@@ -60,11 +64,28 @@ public class CartServiceImpl implements CartService{
 
                 orderRepository.save(activeOrder);
 
-                return  ResponseEntity.status(HttpStatus.CREATED).body(cart);
+                return  ResponseEntity.status(HttpStatus.CREATED).body(cart.getId());
             }else{
 
                 return  ResponseEntity.status(HttpStatus.NOT_FOUND).body("user or product not found");
             }
         }
+    }
+
+    public OrderDto getCartByUserId(Long userId){
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(userId, OrderStatus.Pending);
+
+        List<CartItemsDto> cartItemsDtosList = activeOrder.getCartItems().stream().map(CartItems::getCartDto).collect(Collectors.toList());
+
+        OrderDto orderDto = new OrderDto();
+        orderDto.setAmount(activeOrder.getAmount());
+        orderDto.setId(activeOrder.getId());
+        orderDto.setOrderStatus(activeOrder.getOrderStatus());
+        orderDto.setDiscount(activeOrder.getDiscount());
+        orderDto.setTotalAmount(activeOrder.getTotalAmount());
+        orderDto.setCartItems(cartItemsDtosList);
+
+        return orderDto;
+
     }
 }
