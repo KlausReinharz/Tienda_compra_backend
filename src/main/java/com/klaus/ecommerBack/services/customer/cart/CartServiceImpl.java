@@ -44,7 +44,7 @@ public class CartServiceImpl implements CartService{
             Optional<Product>optionalProduct = productRepository.findById(addProductInCartDto.getProductId());
             Optional<User>optionalUser = userRepository.findById(addProductInCartDto.getUserId());
 
-            if(optionalProduct.isPresent()&& optionalUser.isPresent()){
+            if(optionalProduct.isPresent() && optionalUser.isPresent()){
                 CartItems cart = new CartItems();
                 cart.setProduct(optionalProduct.get());
                 cart.setPrice(optionalProduct.get().getPrice());
