@@ -3,20 +3,16 @@ package com.klaus.ecommerBack.services.customer.cart;
 import com.klaus.ecommerBack.dto.AddProductInCartDto;
 import com.klaus.ecommerBack.dto.CartItemsDto;
 import com.klaus.ecommerBack.dto.OrderDto;
-import com.klaus.ecommerBack.entity.CartItems;
-import com.klaus.ecommerBack.entity.Order;
-import com.klaus.ecommerBack.entity.Product;
-import com.klaus.ecommerBack.entity.User;
+import com.klaus.ecommerBack.entity.*;
 import com.klaus.ecommerBack.enums.OrderStatus;
-import com.klaus.ecommerBack.repository.CartItemsRepository;
-import com.klaus.ecommerBack.repository.OrderRepository;
-import com.klaus.ecommerBack.repository.ProductRepository;
-import com.klaus.ecommerBack.repository.UserRepository;
+import com.klaus.ecommerBack.exceptions.ValidationException;
+import com.klaus.ecommerBack.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -35,6 +31,9 @@ public class CartServiceImpl implements CartService{
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private CouponRepository couponRepository;
 
     //hacemos referecencia a la clase DTO
     public ResponseEntity<?> addProductToCart(AddProductInCartDto addProductInCartDto){
@@ -85,7 +84,38 @@ public class CartServiceImpl implements CartService{
         orderDto.setTotalAmount(activeOrder.getTotalAmount());
         orderDto.setCartItems(cartItemsDtosList);
 
+        if(activeOrder.getCoupon()!=null){
+            orderDto.setCouponName(activeOrder.getCoupon().getName());
+        }
+
         return orderDto;
 
+    }
+
+
+    public OrderDto applyCoupon(Long userId, String code){
+        Order activeOrder = orderRepository.findByUserIdAndOrderStatus(userId, OrderStatus.Pending);
+        Coupon coupon = couponRepository.findByCode(code).orElseThrow(()-> new ValidationException("Coupon not found ."));
+
+        if(couponIsExpired(coupon)){
+            throw new ValidationException("Coupon has expired");
+        }
+
+        double discountAmount = ((coupon.getDiscount()/100.0)* activeOrder.getTotalAmount());
+        double netAmount = activeOrder.getTotalAmount() - discountAmount;
+
+        activeOrder.setAmount((long)netAmount);
+        activeOrder.setDiscount((long)discountAmount);
+        activeOrder.setCoupon(coupon);
+
+        orderRepository.save(activeOrder);
+        return activeOrder.getOrderDto();
+    }
+
+    private boolean couponIsExpired(Coupon coupon){
+        Date currentdate = new Date();
+        Date expirationDate = coupon.getExpirationDate();
+
+        return  expirationDate != null && currentdate.after(expirationDate);
     }
 }
